@@ -20,3 +20,26 @@ to meet the 5-day commit requirement.
 Build the spend input form with all 8 required AI tools.
 Implement form state persistence using localStorage.
 Begin collecting real pricing data for PRICING_DATA.md.
+
+
+## Day 2 — 2025-05-08
+
+**Hours worked:** 1
+
+**What I did:**
+Built the landing page with hero section, headline, subheadline,
+stats row and CTA button. Built the audit input form at /audit 
+with all 8 AI tools supported, plan selectors for each tool,
+monthly spend and seats inputs, team size and use case selector.
+Implemented localStorage persistence so form data survives page reloads.
+
+**What I learned:**
+I learned how useEffect works with localStorage to save and load form data automatically
+
+**Blockers / what I'm stuck on:**
+Understanding how TypeScript types connect 
+across different files was confusing at first
+
+**Plan for tomorrow:**
+Build the audit engine logic in lib/auditEngine.ts.
+Build the results page showing savings breakdown.
