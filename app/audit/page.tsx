@@ -1,8 +1,7 @@
 'use client'
-
+import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { AuditFormData, ToolEntry, ToolName, UseCase } from '@/types'
-
 const TOOLS_CONFIG: Record<ToolName, { label: string; plans: string[] }> = {
   cursor: {
     label: 'Cursor',
@@ -46,7 +45,7 @@ const DEFAULT_FORM: AuditFormData = {
 
 export default function AuditPage() {
   const [formData, setFormData] = useState<AuditFormData>(DEFAULT_FORM)
-
+  const router = useRouter()
   // Load from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('auditFormData')
@@ -256,7 +255,7 @@ export default function AuditPage() {
 
         {/* Submit Button */}
         <button
-          onClick={() => alert('Audit engine coming next!')}
+          onClick={() => router.push('/results')}
           disabled={formData.tools.length === 0}
           className="w-full bg-emerald-500 hover:bg-emerald-400 
             disabled:opacity-50 disabled:cursor-not-allowed
