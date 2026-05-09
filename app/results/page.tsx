@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuditFormData } from '@/types'
 import { runAudit, AuditResult } from '@/lib/auditEngine'
-
+import { generateSummary } from '@/lib/generateSummary'
 const TOOL_LABELS: Record<string, string> = {
   cursor: 'Cursor',
   github_copilot: 'GitHub Copilot',
@@ -33,20 +33,22 @@ const SEVERITY_BADGE: Record<string, string> = {
 export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AuditResult | null>(null)
-
+  const [summary, setSummary] = useState<string>('')
   useEffect(() => {
-    const saved = localStorage.getItem('auditFormData')
-    if (!saved) {
-      router.push('/audit')
-      return
-    }
-    const formData: AuditFormData = JSON.parse(saved)
-    if (formData.tools.length === 0) {
-      router.push('/audit')
-      return
-    }
-    setResult(runAudit(formData))
-  }, [router])
+  const saved = localStorage.getItem('auditFormData')
+  if (!saved) {
+    router.push('/audit')
+    return
+  }
+  const formData: AuditFormData = JSON.parse(saved)
+  if (formData.tools.length === 0) {
+    router.push('/audit')
+    return
+  }
+  const auditResult = runAudit(formData)
+  setResult(auditResult)
+  generateSummary(auditResult).then(setSummary)
+}, [router])
 
   if (!result) {
     return (
@@ -94,6 +96,19 @@ export default function ResultsPage() {
         )}
 
         {/* Per Tool Breakdown */}
+        {/* AI Summary */}
+        {summary && (
+          <div className="bg-slate-800 border border-slate-700 
+            rounded-2xl p-6 mb-8">
+            <p className="text-emerald-400 text-xs font-semibold 
+              uppercase tracking-wider mb-3">
+              AI Analysis
+            </p>
+            <p className="text-slate-300 leading-relaxed">
+              {summary}
+            </p>
+          </div>
+        )}
         <h2 className="text-white font-bold text-xl mb-4">Tool-by-Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
           {result.toolResults.map((tool, i) => (
