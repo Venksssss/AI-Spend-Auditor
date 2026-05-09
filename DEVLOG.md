@@ -43,3 +43,27 @@ across different files was confusing at first
 **Plan for tomorrow:**
 Build the audit engine logic in lib/auditEngine.ts.
 Build the results page showing savings breakdown.
+
+## Day 3 — 2025-05-10
+
+**Hours worked:** approx 2 hrs
+
+**What I did:**
+Built audit engine in lib/auditEngine.ts with official pricing 
+data and rules for detecting overspend. Built results page 
+showing per-tool breakdown, total monthly and annual savings.
+Added AI summary with graceful fallback template when API 
+is unavailable. Documented all pricing sources in PRICING_DATA.md.
+
+**What I learned:**
+Learned how to handle API failures gracefully using try/catch 
+and fallback functions
+
+**Blockers / what I'm stuck on:**
+Could not get Anthropic API free credits. Built fallback 
+template summary instead. Will try to get API access tomorrow.
+
+**Plan for tomorrow:**
+Add shareable URLs for each audit result.
+Set up Supabase for lead capture.
+Add email confirmation using Resend.
