@@ -67,3 +67,32 @@ template summary instead. Will try to get API access tomorrow.
 Add shareable URLs for each audit result.
 Set up Supabase for lead capture.
 Add email confirmation using Resend.
+
+## Day 4 — 2025-05-11
+
+**Hours worked:** 2
+
+**What I did:**
+Set up Supabase database and created audits table with SQL.
+Built lead capture form on results page with email, company 
+name and role fields. Added honeypot field for spam protection.
+Connected audit saving to Supabase database. Fixed RLS policy 
+issue by disabling row level security for public table.
+Fixed Supabase URL misconfiguration by removing /rest/v1/ suffix.
+Built shareable URL page at /share/[id] with Open Graph and 
+Twitter card meta tags. Added email confirmation using Resend 
+that sends audit summary and Credex CTA for high savings cases.
+Debugged API errors using browser Network tab.
+
+**What I learned:**
+ Learned that Supabase RLS blocks all inserts by default and must be configured for public tools
+**Blockers / what I'm stuck on:**
+Anthropic API free credits unavailable — using fallback 
+summary template instead. Email initially not received due 
+to incorrect Resend sender configuration.
+
+**Plan for tomorrow:**
+Write 5+ tests for audit engine.
+Set up GitHub Actions CI pipeline.
+Deploy to Vercel with environment variables.
+Fill in all required documentation files.
