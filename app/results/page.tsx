@@ -1,10 +1,12 @@
 'use client'
 
+import { saveAudit } from '@/lib/saveAudit'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuditFormData } from '@/types'
 import { runAudit, AuditResult } from '@/lib/auditEngine'
 import { generateSummary } from '@/lib/generateSummary'
+
 const TOOL_LABELS: Record<string, string> = {
   cursor: 'Cursor',
   github_copilot: 'GitHub Copilot',
@@ -34,21 +36,49 @@ export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AuditResult | null>(null)
   const [summary, setSummary] = useState<string>('')
+  const [email, setEmail] = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [role, setRole] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [shareId, setShareId] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState<AuditFormData | null>(null)
+
   useEffect(() => {
-  const saved = localStorage.getItem('auditFormData')
-  if (!saved) {
-    router.push('/audit')
-    return
+    const saved = localStorage.getItem('auditFormData')
+    if (!saved) {
+      router.push('/audit')
+      return
+    }
+    const parsedFormData: AuditFormData = JSON.parse(saved)
+    if (parsedFormData.tools.length === 0) {
+      router.push('/audit')
+      return
+    }
+    const auditResult = runAudit(parsedFormData)
+    setFormData(parsedFormData)
+    setResult(auditResult)
+    generateSummary(auditResult).then(setSummary)
+  }, [router])
+
+  const handleSubmit = async () => {
+    if (!email || !result || !formData) return
+    setSaving(true)
+
+    const response = await saveAudit({
+      formData,
+      result,
+      email,
+      companyName,
+      role,
+    })
+
+    if (response.shareId) {
+      setShareId(response.shareId)
+      setSubmitted(true)
+    }
+    setSaving(false)
   }
-  const formData: AuditFormData = JSON.parse(saved)
-  if (formData.tools.length === 0) {
-    router.push('/audit')
-    return
-  }
-  const auditResult = runAudit(formData)
-  setResult(auditResult)
-  generateSummary(auditResult).then(setSummary)
-}, [router])
 
   if (!result) {
     return (
@@ -95,20 +125,17 @@ export default function ResultsPage() {
           </div>
         )}
 
-        {/* Per Tool Breakdown */}
         {/* AI Summary */}
         {summary && (
-          <div className="bg-slate-800 border border-slate-700 
-            rounded-2xl p-6 mb-8">
-            <p className="text-emerald-400 text-xs font-semibold 
-              uppercase tracking-wider mb-3">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-8">
+            <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-3">
               AI Analysis
             </p>
-            <p className="text-slate-300 leading-relaxed">
-              {summary}
-            </p>
+            <p className="text-slate-300 leading-relaxed">{summary}</p>
           </div>
         )}
+
+        {/* Per Tool Breakdown */}
         <h2 className="text-white font-bold text-xl mb-4">Tool-by-Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
           {result.toolResults.map((tool, i) => (
@@ -137,6 +164,80 @@ export default function ResultsPage() {
             <p className="text-slate-400 text-sm">
               Your AI stack looks optimized. Sign up to get notified when new savings opportunities apply to your stack.
             </p>
+          </div>
+        )}
+
+        {/* Lead Capture Form */}
+        {!submitted ? (
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-6">
+            <h3 className="text-white font-bold text-lg mb-2">
+              📩 Get Your Full Report
+            </h3>
+            <p className="text-slate-400 text-sm mb-4">
+              Enter your email to save this audit and get a shareable link.
+            </p>
+            <div className="space-y-3">
+              <input
+                type="email"
+                placeholder="Your email *"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full bg-slate-700 text-white rounded-lg px-4 py-3 border border-slate-600 focus:outline-none focus:border-emerald-500"
+              />
+              <input
+                type="text"
+                placeholder="Company name (optional)"
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                className="w-full bg-slate-700 text-white rounded-lg px-4 py-3 border border-slate-600 focus:outline-none focus:border-emerald-500"
+              />
+              <input
+                type="text"
+                placeholder="Your role (optional)"
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                className="w-full bg-slate-700 text-white rounded-lg px-4 py-3 border border-slate-600 focus:outline-none focus:border-emerald-500"
+              />
+              {/* Honeypot - hidden from real users, catches bots */}
+              <input
+                type="text"
+                name="website"
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+              <button
+                onClick={handleSubmit}
+                disabled={!email || saving}
+                className="w-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors duration-200"
+              >
+                {saving ? 'Saving...' : 'Get My Report →'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 mb-6 text-center">
+            <p className="text-emerald-400 font-bold text-lg mb-2">
+              ✅ Report Saved!
+            </p>
+            <p className="text-slate-400 text-sm mb-4">
+              Share your audit with this link:
+            </p>
+            <div className="bg-slate-800 rounded-lg px-4 py-3 text-emerald-400 text-sm font-mono mb-4 break-all">
+              {typeof window !== 'undefined'
+                ? `${window.location.origin}/share/${shareId}`
+                : ''}
+            </div>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/share/${shareId}`
+                )
+              }}
+              className="bg-slate-700 hover:bg-slate-600 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+            >
+              Copy Link
+            </button>
           </div>
         )}
 
