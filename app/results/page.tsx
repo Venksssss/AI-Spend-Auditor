@@ -1,6 +1,6 @@
 'use client'
 
-import { saveAudit } from '@/lib/saveAudit'
+import { saveAudit, sendConfirmationEmail } from '@/lib/saveAudit'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuditFormData } from '@/types'
@@ -76,10 +76,18 @@ export default function ResultsPage() {
     if (response.shareId) {
       setShareId(response.shareId)
       setSubmitted(true)
+      await sendConfirmationEmail(
+        email,
+        result.totalMonthlySavings,
+        result.totalAnnualSavings,
+        response.shareId,
+        result.isHighSavings
+      )
     }
     setSaving(false)
   }
 
+  // ✅ THIS IS THE FIX — must be here before main return
   if (!result) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">

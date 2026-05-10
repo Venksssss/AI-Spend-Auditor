@@ -2,6 +2,43 @@ import { supabase } from './supabase'
 import { AuditResult } from './auditEngine'
 import { AuditFormData } from '@/types'
 import { generateShareId } from './shareId'
+
+type SaveAuditParams = {
+  email: string
+  companyName?: string | null
+  role?: string | null
+  formData: AuditFormData
+  result: AuditResult
+}
+
+type SaveAuditResponse = {
+  shareId: string
+  error?: string | null
+}
+
+export async function sendConfirmationEmail(
+  email: string,
+  monthlySavings: number,
+  annualSavings: number,
+  shareId: string,
+  isHighSavings: boolean
+) {
+  try {
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        monthlySavings: monthlySavings.toFixed(0),
+        annualSavings: annualSavings.toFixed(0),
+        shareId,
+        isHighSavings
+      })
+    })
+  } catch (error) {
+    console.error('Email sending failed:', error)
+  }
+}
 export async function saveAudit(params: SaveAuditParams): Promise<SaveAuditResponse> {
   const shareId = generateShareId()
 
