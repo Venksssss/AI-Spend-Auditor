@@ -21,7 +21,7 @@ export default function Home() {
         {/* Subheadline */}
         <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
           Enter what you pay for Cursor, ChatGPT, Claude and more. 
-          Get an instant audit showing exactly where you're overspending 
+          Get an instant audit showing exactly where you are overspending 
           and how much you could save.
         </p>
 

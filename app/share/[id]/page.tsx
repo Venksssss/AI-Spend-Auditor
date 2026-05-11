@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
-
+import Link from 'next/link'
 const TOOL_LABELS: Record<string, string> = {
   cursor: 'Cursor',
   github_copilot: 'GitHub Copilot',
@@ -85,7 +85,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
         {/* Tools Breakdown */}
         <h2 className="text-white font-bold text-xl mb-4">Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
-          {audit.tools.map((tool: any, i: number) => (
+          {(audit.tools as Array<{toolName: string; plan: string; seats: number; monthlySpend: number}>).map((tool, i) => (
             <div key={i} className={`rounded-2xl p-6 border ${SEVERITY_COLORS['low']}`}>
               <h3 className="text-white font-semibold">
                 {TOOL_LABELS[tool.toolName] || tool.toolName}
@@ -107,12 +107,12 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
             Free, no login required, takes 2 minutes.
           </p>
           
-          <a
+          <Link
             href="/"
             className="inline-block bg-emerald-500 hover:bg-emerald-400 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200"
           >
             Run My Free Audit →
-          </a>
+          </Link>
         </div>
 
       </div>

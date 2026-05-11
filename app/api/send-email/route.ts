@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
 
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
