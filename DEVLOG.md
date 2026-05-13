@@ -1,6 +1,6 @@
 ## Day 1 — 2025-05-07
 
-**Hours worked:** (fill this in honestly)
+**Hours worked:** 1
 
 **What I did:**
 Received the assignment on Day 0 but had a scheduled exam so could not begin.
