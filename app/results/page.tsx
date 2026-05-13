@@ -1,7 +1,7 @@
 'use client'
 
 import { saveAudit, sendConfirmationEmail } from '@/lib/saveAudit'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuditFormData } from '@/types'
 import { runAudit, AuditResult } from '@/lib/auditEngine'
@@ -43,22 +43,25 @@ export default function ResultsPage() {
   const [shareId, setShareId] = useState('')
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState<AuditFormData | null>(null)
-
+  const initialized = useRef(false)
   useEffect(() => {
-    const saved = localStorage.getItem('auditFormData')
-    if (!saved) {
-      router.push('/audit')
-      return
-    }
-    const parsedFormData: AuditFormData = JSON.parse(saved)
-    if (parsedFormData.tools.length === 0) {
-      router.push('/audit')
-      return
-    }
-    const auditResult = runAudit(parsedFormData)
-    setFormData(parsedFormData)
-    setResult(auditResult)
-    generateSummary(auditResult).then(setSummary)
+  if (initialized.current) return
+  initialized.current = true
+  
+  const saved = localStorage.getItem('auditFormData')
+  if (!saved) {
+    router.push('/audit')
+    return
+  }
+  const parsedFormData: AuditFormData = JSON.parse(saved)
+  if (parsedFormData.tools.length === 0) {
+    router.push('/audit')
+    return
+  }
+  const auditResult = runAudit(parsedFormData)
+  setFormData(parsedFormData)
+  setResult(auditResult)
+  generateSummary(auditResult).then(setSummary)
   }, [router])
 
   const handleSubmit = async () => {

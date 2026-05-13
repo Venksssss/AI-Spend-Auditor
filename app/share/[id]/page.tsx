@@ -1,6 +1,14 @@
 import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { ToolEntry } from '@/types'
+
+interface AuditTool {
+  toolName: string;
+  plan: string;
+  seats: number;
+  monthlySpend: number;
+}
 const TOOL_LABELS: Record<string, string> = {
   cursor: 'Cursor',
   github_copilot: 'GitHub Copilot',
@@ -85,7 +93,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
         {/* Tools Breakdown */}
         <h2 className="text-white font-bold text-xl mb-4">Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
-          {(audit.tools as Array<{toolName: string; plan: string; seats: number; monthlySpend: number}>).map((tool, i) => (
+          {(audit.tools as AuditTool[]).map((tool, i) => (
             <div key={i} className={`rounded-2xl p-6 border ${SEVERITY_COLORS['low']}`}>
               <h3 className="text-white font-semibold">
                 {TOOL_LABELS[tool.toolName] || tool.toolName}

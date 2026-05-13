@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "jest"
+    "lint": "eslint app lib types --ext .ts,.tsx",
+    "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
