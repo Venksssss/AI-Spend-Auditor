@@ -96,3 +96,42 @@ Write 5+ tests for audit engine.
 Set up GitHub Actions CI pipeline.
 Deploy to Vercel with environment variables.
 Fill in all required documentation files.
+
+## Day 5 — 2025-05-12
+
+**Hours worked:** 0
+
+Had university exams today. Could not work on the project.
+Will make up the time tomorrow and on the final day.
+
+---
+
+## Day 6 — 2025-05-13
+
+**Hours worked:** 0
+
+Had university exams today. Could not work on the project.
+Final push planned for Day 7.
+
+---
+
+## Day 7 — 2025-05-14
+
+**Hours worked:** 3
+
+**What I did:**
+Built and fixed GitHub Actions CI pipeline. Resolved all ESLint 
+lint errors. Added package-lock.json for CI. Deployed to Vercel 
+with all environment variables. Completed all required 
+documentation files: README.md, ARCHITECTURE.md, GTM.md, 
+ECONOMICS.md, USER_INTERVIEWS.md, LANDING_COPY.md, METRICS.md, 
+PROMPTS.md, TESTS.md, REFLECTION.md. Final commit and submission.
+
+**What I learned:**
+took an intresting project to make and learned many new things which i misssed out on my privious projects
+
+**Blockers / what I'm stuck on:**
+None — project complete and submitted.
+
+**Plan for tomorrow:**
+Waiting for Round 2 results from Credex.
